@@ -12,7 +12,7 @@ namespace Mapi.GameObjects;
 internal class CameraPoint : IMonoGame, IVisibleObject
 {
     const string TextureName = "Camera";
-    const float Velocity = 20f;
+    const float Velocity = 25f;
 
     public void LoadContent(ContentManager contentManager)
     {
@@ -35,38 +35,16 @@ internal class CameraPoint : IMonoGame, IVisibleObject
     public void Update(GameTime gameTime)
     {
         var newPosition = this.MapPosition;
-        var keyboardState = Keyboard.GetState();
         float delta = (float)gameTime.ElapsedGameTime.TotalMilliseconds / Global.FPS;
 
-        if (keyboardState.IsKeyDown(Keys.Left) ||
-            keyboardState.IsKeyDown(Keys.A))
-        {            
-            newPosition.X -= Velocity * delta;
-        }
-
-        if (keyboardState.IsKeyDown(Keys.Right) ||
-            keyboardState.IsKeyDown(Keys.D))
-        {
-            newPosition.X += Velocity * delta;
-        }
-
-        if (keyboardState.IsKeyDown(Keys.Up) ||
-            keyboardState.IsKeyDown(Keys.W))
-        {
-            newPosition.Y -= Velocity * delta;
-        }
-
-        if (keyboardState.IsKeyDown(Keys.Down) ||
-            keyboardState.IsKeyDown(Keys.S))
-        {
-            newPosition.Y += Velocity * delta;
-        }
+        var vector = KeyboardController.CheckInput();
+        vector = vector * Velocity * delta;
+        newPosition += vector;
         
-        if ((newPosition.X < 0) || (newPosition.Y < 0)) return;
-        if ((newPosition.X + Global.RenderWidth) > Global.MapWidth) return;
-        if ((newPosition.Y + Global.RenderHeight) > Global.MapHeight) return;
-
-
+        if (newPosition.X < 0) newPosition.X = 0;
+        if (newPosition.Y < 0) newPosition.Y = 0;
+        if ((newPosition.X + Global.RenderWidth) > Global.MapWidth) newPosition.X = Global.MapWidth - Global.RenderWidth;
+        if ((newPosition.Y + Global.RenderHeight) > Global.MapHeight) newPosition.Y = Global.MapHeight - Global.RenderHeight;
 
         this.MapPosition = newPosition;
 
