@@ -23,7 +23,7 @@ internal class ViewPort
     public void OnUpdateCamera()
     {
         // Update the ViewPort (Camera)
-        MapPosition = _cameraPoint.MapPosition - new Vector2(Global.CameraWidth / 2, Global.CameraHeight / 2);
+        MapPosition = _cameraPoint.MapPosition; //- new Vector2(Global.CameraWidth / 2, Global.CameraHeight / 2);
         Bounds = new Rectangle(MapPosition.ToPoint(), new Point(Global.CameraWidth, Global.CameraHeight));
     }
 

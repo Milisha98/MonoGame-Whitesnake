@@ -20,6 +20,9 @@ internal static class Global
 
     public const int CameraWidth = 1280;
     public const int CameraHeight = 720;
+
+    public const int MapWidth = 5120;
+    public const int MapHeight = 2880;
 }
 
 

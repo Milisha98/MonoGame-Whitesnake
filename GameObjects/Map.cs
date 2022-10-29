@@ -13,7 +13,7 @@ namespace Mapi.GameObjects;
 
 internal class Map : IMonoGame, IVisibleObject
 {
-    const string TextureName = "Map";
+    const string TextureName = "map";
 
     public void LoadContent(ContentManager contentManager)
     {

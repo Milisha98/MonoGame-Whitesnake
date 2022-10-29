@@ -45,10 +45,6 @@ public class MapiGame : Game
         TargetElapsedTime = TimeSpan.FromSeconds(1.0 / Global.FPS);
         IsFixedTimeStep = true;
 
-        // Initialize
-        _cameraPoint.MapPosition = _map.MapSprite.Size / 2;
-        _viewport = new ViewPort(_cameraPoint);
-
         base.Initialize();
     }
 
@@ -56,7 +52,7 @@ public class MapiGame : Game
     // Load Content
     //
     protected override void LoadContent()
-    {       
+    {
         // Game
         _renderTarget = new RenderTarget2D(GraphicsDevice, Global.ScreenWidth, Global.ScreenHeight);
         _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -64,6 +60,10 @@ public class MapiGame : Game
         // Game Objects
         _cameraPoint.LoadContent(Content);
         _map.LoadContent(Content);
+
+        // Initialize
+        _cameraPoint.MapPosition = _map.MapSprite.Size / 2;
+        _viewport = new ViewPort(_cameraPoint);
 
         // Debug
         _debugText = Content.Load<SpriteFont>("Text");
@@ -96,7 +96,11 @@ public class MapiGame : Game
         base.Update(gameTime);
     }
 
-    private void UpdateCamera() => _cameraPoint.Update(_updateGameTime);
+    private void UpdateCamera()
+    {
+        _cameraPoint.Update(_updateGameTime);
+        _viewport.OnUpdateCamera();
+    }
 
     #endregion
 
@@ -117,6 +121,7 @@ public class MapiGame : Game
         _spriteBatch.Begin();
         DrawMap();
         DrawCamera();
+        DrawDebugText();
         _spriteBatch.End();
 
         // Draw from back-buffer
@@ -136,8 +141,9 @@ public class MapiGame : Game
     }
 
     private void DrawMap() => _map.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
-    private void DrawCamera() => _map.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
+    private void DrawCamera() => _cameraPoint.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
 
+    private void DrawDebugText() => _spriteBatch.DrawString(_debugText, _cameraPoint.MapPosition.ToString(), new Vector2(0, 0), Color.White);
 
     #endregion
 }
