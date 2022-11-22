@@ -6,7 +6,7 @@ using System;
 
 namespace Mapi;
 
-public class MapiGame : Game
+public class WalkGame : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
@@ -19,7 +19,7 @@ public class MapiGame : Game
 
     // Game Objects    
     private CameraPoint _cameraPoint = new();
-    private Map _map = new();
+    private Mech _mech = new();
     private ViewPort _viewport;
 
     // Debugging    
@@ -27,7 +27,7 @@ public class MapiGame : Game
     private SpriteFont _debugText;
 
 
-    public MapiGame()
+    public WalkGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         _graphics.PreferredBackBufferWidth = Global.ScreenWidth;
@@ -59,10 +59,10 @@ public class MapiGame : Game
 
         // Game Objects
         _cameraPoint.LoadContent(Content);
-        _map.LoadContent(Content);
+        _mech.LoadContent(Content);
 
         // Initialize
-        _cameraPoint.MapPosition = _map.MapSprite.Size / 2;
+        _cameraPoint.MapPosition = _mech.MapSprite.Size / 2;
         _viewport = new ViewPort(_cameraPoint);
 
         // Debug
@@ -140,7 +140,7 @@ public class MapiGame : Game
         _spriteBatch.End();
     }
 
-    private void DrawMap() => _map.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
+    private void DrawMap() => _mech.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
     private void DrawCamera() => _cameraPoint.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
 
     private void DrawDebugText() => _spriteBatch.DrawString(_debugText, _cameraPoint.MapPosition.ToString(), new Vector2(0, 0), Color.White);

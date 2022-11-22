@@ -1,3 +1,3 @@
 ﻿
-using var game = new Mapi.MapiGame();
+using var game = new Mapi.WalkGame();
 game.Run();
