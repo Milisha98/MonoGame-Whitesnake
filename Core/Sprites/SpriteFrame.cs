@@ -6,26 +6,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Smoke.Sprites;
+namespace Smoke.Sprites
+{ 
 
-
-public record SpriteFrame
-{
-    public SpriteFrame(string name, Texture2D texture, Rectangle sourceRect, Vector2 size)
+    public class SpriteFrame
     {
-        this.Name = name;
-        this.Texture = texture;
-        this.SourceRectangle = sourceRect;
-        this.Size = size;
+        public SpriteFrame(string name, Texture2D texture, Rectangle sourceRect, Vector2 size)
+        {
+            this.Name = name;
+            this.Texture = texture;
+            this.SourceRectangle = sourceRect;
+            this.Size = size;
+        }
+
+        public string Name { get; private set; }
+
+        public Texture2D Texture { get; private set; }
+
+        public Rectangle SourceRectangle { get; private set; }
+
+        public Vector2 Size { get; private set; }
+
     }
 
-    public string Name { get; init; }
-
-    public Texture2D Texture { get; init; }
-
-    public Rectangle SourceRectangle { get; init; }
-
-    public Vector2 Size { get; init; }
-
 }
-

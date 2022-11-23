@@ -4,44 +4,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Smoke.Sprites;
-
-public class SpriteSheet
+namespace Smoke.Sprites
 {
-	private Dictionary<string, SpriteFrame> _frames;
-	
-	public SpriteSheet()
+
+	public class SpriteSheet
 	{
-		_frames = new Dictionary<string, SpriteFrame>();
-    }
+		private Dictionary<string, SpriteFrame> _frames;
 
-	public void Add(SpriteFrame spriteFrame)
-	{		
-		if (_frames.ContainsKey(spriteFrame.Name))
+		public SpriteSheet()
 		{
-			_frames[spriteFrame.Name] = spriteFrame;
+			_frames = new Dictionary<string, SpriteFrame>();
 		}
-		else
+
+		public void Add(SpriteFrame spriteFrame)
 		{
-			_frames.Add(spriteFrame.Name, spriteFrame);
+			if (_frames.ContainsKey(spriteFrame.Name))
+			{
+				_frames[spriteFrame.Name] = spriteFrame;
+			}
+			else
+			{
+				_frames.Add(spriteFrame.Name, spriteFrame);
+			}
 		}
-	}
 
-	public void AddRange(SpriteSheet spriteSheet)
-	{	
-		foreach (var sprite in spriteSheet.SpriteList)
+		public void AddRange(SpriteSheet spriteSheet)
 		{
-			this.Add(sprite);
+			foreach (var sprite in spriteSheet.SpriteList)
+			{
+				this.Add(sprite);
+			}
 		}
-	}
 
 
-	public SpriteFrame? Get(string name) =>
-		_frames.GetValueOrDefault(name);
+		public SpriteFrame Get(string name) =>
+			_frames.ContainsKey(name) ? _frames[name] : default;
 
 
-	public List<SpriteFrame> SpriteList
-	{
-		get => _frames.Values.ToList();
+		public List<SpriteFrame> SpriteList
+		{
+			get => _frames.Values.ToList();
+		}
 	}
 }

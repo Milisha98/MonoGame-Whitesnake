@@ -1,0 +1,16 @@
+﻿. Smoke
+. Auto-Pattern for Merry Christmas
+	. Structure
+	. Add Timings
+		. M
+		. e
+		. r
+		. r
+		. y
+		. X
+		. m
+		. a
+		. s
+. Zoom out
+
+.Count down

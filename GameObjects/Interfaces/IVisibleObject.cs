@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mapi.GameObjects;
-
-internal interface IVisibleObject
+namespace Whitesnake.GameObjects
 {
-    Vector2 MapPosition { get; set; }
-    Vector2 ScreenPosition { get; set; }
+
+    internal interface IVisibleObject
+    {
+        Vector2 MapPosition { get; set; }
+        Vector2 ScreenPosition { get; set; }
+    }
 }

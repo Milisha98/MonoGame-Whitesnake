@@ -4,9 +4,9 @@ namespace Smoke.Core.Sprites
 {
     internal interface IAnimation
     {
-        public void Start();
-        public void Stop();
-        public void Reset();
+        void Start();
+        void Stop();
+        void Reset();
 
         long CurrentMilliseconds { get; set; }
         TimeSpan Duration { get; set; }
