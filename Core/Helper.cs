@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using Whitesnake.GameObjects;
 
 namespace Whitesnake.Core
 {
@@ -41,7 +44,8 @@ namespace Whitesnake.Core
         internal static Vector2 MapPositionToScreenPosition(this Vector2 mapPosition, Rectangle viewPort)
         {
             var viewPortMapTopLeft = viewPort.Location.ToVector2();
-            return mapPosition - viewPortMapTopLeft - Global.CameraMiddle;
+            var halfScreen = new Vector2(Global.RenderWidth / 2, Global.RenderHeight / 2);
+            return mapPosition - viewPortMapTopLeft + halfScreen;
         }
 
         internal static int Clip(this int value, int min, int max) =>
@@ -51,7 +55,7 @@ namespace Whitesnake.Core
                     ? max
                     : value;
 
-        internal static float Clip(this float value, float min, float max) =>
+        internal static float Clamp(this float value, float min, float max) =>
             value < min
                 ? min
                 : value > max
@@ -67,8 +71,25 @@ namespace Whitesnake.Core
 
         internal static float NormalizeEasing(this float value, float min, float max)
         {
-            value = value.Clip(min, max);
+            value = value.Clamp(min, max);
             return value - min / max - min;
+        }
+
+
+        internal static float GetDistance(this Vector2 v1, Vector2 v2)
+        {
+            double x = (double)Math.Abs(v1.X - v2.X);
+            double y = (double)Math.Abs(v1.Y - v2.Y);
+            double result = Math.Sqrt((x * x) + (y * y));
+            return (float)result;
+
+        }
+
+        internal static float GetAngle(this Vector2 a, Vector2 b)
+        {
+                double x = b.X - a.X;
+                double y = b.Y - a.Y;
+                return (float)Math.Atan2(y, x);
         }
 
     }

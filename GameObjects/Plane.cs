@@ -4,12 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Smoke.Core;
 using Smoke.Sprites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Whitesnake.Core.Easings;
+
 
 namespace Whitesnake.GameObjects
 {
@@ -20,8 +15,9 @@ namespace Whitesnake.GameObjects
         const string PlaneLeftTextureName = "biplane-left";
         const string PlaneRightTextureName = "biplane-right";
 
-        public Plane(CameraPoint cameraPoint)
+        public Plane(GameState gameState, CameraPoint cameraPoint)
         {
+            GameState = gameState;
             CameraPoint = cameraPoint;
         }
 
@@ -40,7 +36,6 @@ namespace Whitesnake.GameObjects
                                            footTexture.Bounds,
                                            new Vector2(footTexture.Bounds.Width, footTexture.Bounds.Height));
 
-            // Gun animation is low priority. Will get to it if there's nothing else pressing
             Texture2D laserGunTexture = contentManager.Load<Texture2D>(PlaneRightTextureName);
             PlaneRightSprite = new SpriteFrame(PlaneRightTextureName,
                                            laserGunTexture,
@@ -50,33 +45,34 @@ namespace Whitesnake.GameObjects
 
         public void Update(GameTime gameTime)
         {
-            float delta = (float)gameTime.ElapsedGameTime.TotalMilliseconds / Global.FPS;
+            SetCurrentSpriteFromControllerInput();          
 
-            var vector = KeyboardController.CheckInput();
+            // Set the Location
+            Angle = CameraPoint.Angle;
+            ScreenPosition = CameraPoint.ScreenPosition - CurrentSprite.Texture.Middle();
+            MapPosition = CameraPoint.MapPosition - CurrentSprite.Texture.Middle();
 
-            // Depending on the direction pressed, show the approprate sprite
-            int direction = vector.X > 0 ? 1 : vector.X < 0 ? -1 : 0;
+            // Smoke Emitter
+            Vector2 planeMiddle = this.MapPosition - CurrentSprite.Texture.Middle();
+            var smokeDelta = CameraPoint.AngleVector * (CurrentSprite.Texture.Height / 2);
+            SmokePosition = planeMiddle - smokeDelta;
+
+        }
+
+        private void SetCurrentSpriteFromControllerInput()
+        {
+            int direction = CameraPoint.ControllerDirection;
 
             // Switch the current Sprite            
             if (direction == -1) CurrentSprite = PlaneLeftSprite;
             if (direction == 1) CurrentSprite = PlaneRightSprite;
             if (direction == 0) CurrentSprite = PlaneSprite;
-
-            // TODO: Rotate
-
-            // Set the Location
-            ScreenPosition = CameraPoint.ScreenPosition - CurrentSprite.Texture.Middle();
-            MapPosition = CameraPoint.MapPosition - CurrentSprite.Texture.Middle();
-
-
         }
-
-
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, Rectangle viewPort)
         {
             var origin = new Vector2(CurrentSprite.Texture.Width / 2, CurrentSprite.Texture.Height / 2);
-            spriteBatch.Draw(CurrentSprite.Texture, ScreenPosition, null, Color.White, CameraPoint.Angle, origin, 1f, SpriteEffects.None, 1);
+            spriteBatch.Draw(CurrentSprite.Texture, ScreenPosition, null, Color.White, Angle, origin, 1f, SpriteEffects.None, 1);
         }
 
         public SpriteFrame PlaneSprite { get; private set; }
@@ -89,5 +85,8 @@ namespace Whitesnake.GameObjects
         public Vector2 ScreenPosition { get; set; } = Vector2.Zero;
 
         public CameraPoint CameraPoint { get; private set; }
+        public GameState GameState { get; private set; }
+        public float Angle { get; set; } = 0;
+        public Vector2 SmokePosition { get; private set; }
     }
 }

@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Input;
 using Smoke.Core;
 using Smoke.Sprites;
 using System;
+using Whitesnake.Demo;
+using System.ComponentModel.Design;
 
 namespace Whitesnake.GameObjects
 {
@@ -13,7 +15,12 @@ namespace Whitesnake.GameObjects
     internal class CameraPoint : IMonoGame, IVisibleObject
     {
         const string TextureName = "Camera";
-        const float Velocity = 25f;
+        public const float DefaultVelocity = 25f;
+
+        public CameraPoint(GameState gameState)
+        {
+            GameState = gameState;
+        }
 
         public void LoadContent(ContentManager contentManager)
         {
@@ -34,10 +41,12 @@ namespace Whitesnake.GameObjects
 
         public void Update(GameTime gameTime)
         {
-            var newPosition = this.MapPosition;
             float delta = (float)gameTime.ElapsedGameTime.TotalMilliseconds / Global.FPS;
 
-            ControllerInput(delta);
+            if (GameState.IsDemoMode == false)
+                ControllerInput(delta);
+            else
+                MoveTowardsNextWaypoint((float)gameTime.ElapsedGameTime.TotalMilliseconds);
 
             // Move the absolute position
             var sinTheta = (float)Math.Sin(Angle);
@@ -45,19 +54,33 @@ namespace Whitesnake.GameObjects
             AngleVector = new Vector2(sinTheta, -cosTheta);
             MapPosition += (AngleVector * Velocity);
 
+            UpdateDelta = delta;
         }
 
         private void ControllerInput(float delta)
         {
-            if (IsDemoMode) return;
             var vector = KeyboardController.CheckInput();
-            int direction = vector.X > 0 ? 1 : vector.X < 0 ? -1 : 0;
+            ControllerDirection = vector.X > 0 ? 1 : vector.X < 0 ? -1 : 0;
 
             // Set the Angle
             float deltaAngle = 0f;
-            if (direction == -1) deltaAngle = -delta * Handling;
-            if (direction == 1) deltaAngle = delta * Handling;
+            if (ControllerDirection == -1) deltaAngle = -delta * Handling;
+            if (ControllerDirection == 1) deltaAngle = delta * Handling;
             Angle += deltaAngle;
+        }
+
+        private void MoveTowardsNextWaypoint(float ms)
+        {
+            var newAngle = MathHelper.ToRadians(GameState.DemoStep.Rotation);
+            if (newAngle == 0)
+                ControllerDirection = 0;
+            else if (newAngle < 0)
+                ControllerDirection = -1;
+            else
+                ControllerDirection = 1;
+            Angle += newAngle;
+            Velocity = GameState.DemoStep.Velocity;
+
         }
 
         #region IVisibleObject
@@ -75,8 +98,15 @@ namespace Whitesnake.GameObjects
 
         #endregion
 
-        public bool IsDemoMode { get; set; }
+        public GameState GameState { get; private set; }
 
-        public SpriteFrame CameraSprite { get; set; }
+        public SpriteFrame CameraSprite { get; private set; }
+
+        public int ControllerDirection { get; private set; }
+             
+        public float UpdateDelta { get; private set; }
+
+        public float Velocity { get; set; } = DefaultVelocity;
+        
     }
 }

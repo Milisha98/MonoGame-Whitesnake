@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Plane = Whitesnake.GameObjects.Plane;
+using Whitesnake.Demo;
+using Whitesnake.Core;
 
 namespace Whitesnake
 {
@@ -19,15 +21,19 @@ namespace Whitesnake
         private GameTime _updateGameTime;
         private GameTime _drawGameTime;
 
-        // Game Objects    
-        private CameraPoint _cameraPoint = new CameraPoint();
+        // Game Objects
+        private GameState _gameState = new GameState();
+        private CameraPoint _cameraPoint;
         private Plane _plane;
         private ViewPort _viewport;
-        private bool _demoMode = true;
+        private SmokeEmitter _emitter;
 
-        // Debugging    
-        private bool _break = false;
-        private SpriteFont _debugText;
+        // Demo
+        private DemoController _demo = new DemoController();
+
+        // Debugging
+        private SpriteFont _spriteFont;
+        private string _debugText = "";
 
 
         public WhitesnakeGame()
@@ -48,7 +54,12 @@ namespace Whitesnake
             TargetElapsedTime = TimeSpan.FromSeconds(1.0 / Global.FPS);
             IsFixedTimeStep = true;
 
-            _plane = new Plane(_cameraPoint);
+            _cameraPoint = new CameraPoint(_gameState);
+            _plane = new Plane(_gameState, _cameraPoint);
+            _emitter = new SmokeEmitter(_gameState, _cameraPoint);
+
+            _gameState.IsDemoMode = true;
+            _gameState.DemoStep = _demo.GetNextStep(0);
 
             base.Initialize();
         }
@@ -65,13 +76,14 @@ namespace Whitesnake
             // Game Objects
             _cameraPoint.LoadContent(Content);
             _plane.LoadContent(Content);
+            _emitter.LoadContent(Content);
 
             // Initialize
             _cameraPoint.MapPosition = Vector2.Zero;
             _viewport = new ViewPort(_cameraPoint);
 
             // Debug
-            _debugText = Content.Load<SpriteFont>("Text");
+            _spriteFont = Content.Load<SpriteFont>("Text");
         }
 
         #region Update
@@ -91,12 +103,14 @@ namespace Whitesnake
                 Exit();
 
             // Keyboard
-            if (keyboardState.IsKeyDown(Keys.OemTilde)) _break = _break == false;
-            if (_break) return;
+            if (keyboardState.IsKeyDown(Keys.OemTilde)) _gameState.PauseGame = _gameState.PauseGame == false;
+            if (_gameState.PauseGame) return;
 
             // Game Objects
             UpdateCamera();
+            UpdateDemo();
             UpdatePlane();
+            UpdateSmoke();
 
             base.Update(gameTime);
         }
@@ -109,6 +123,32 @@ namespace Whitesnake
 
         private void UpdatePlane() =>
             _plane.Update(_updateGameTime);
+
+
+        private void UpdateSmoke()
+        {
+            _emitter.MapPosition = _plane.SmokePosition;
+            _emitter.Update(_updateGameTime);
+        }
+
+        private void UpdateDemo()
+        {
+            if (_gameState.IsDemoMode == false) return;
+
+            var duration = _gameState.DemoStep.Duration;
+            var elapsed = _gameState.DemoStep.Elapsed;
+
+            elapsed += (int)_updateGameTime.ElapsedGameTime.TotalMilliseconds;
+            _gameState.DemoStep.Elapsed = elapsed;
+            _emitter.SmokeDuration = _gameState.DemoStep.MaxDecay; ;
+            _emitter.EmitSmoke = _gameState.DemoStep.SmokeOn;
+
+            if (elapsed >= duration)
+            {
+                _gameState.DemoStep = _demo.GetNextStep(_gameState.DemoStep.Sequence);
+                if (_gameState.DemoStep == null) _gameState.IsDemoMode = false;
+            }         
+        }
 
 
         #endregion
@@ -126,9 +166,13 @@ namespace Whitesnake
 
             // Draw Game Objects to back-buffer
             _spriteBatch.Begin();
-            DrawPlane();
             DrawCamera();
-            DrawDebugText();
+            DrawSmoke();
+            DrawPlane();
+
+
+            DrawDebug();
+            
             _spriteBatch.End();
 
             // Draw from back-buffer
@@ -149,7 +193,14 @@ namespace Whitesnake
 
         private void DrawPlane() => _plane.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
         private void DrawCamera() => _cameraPoint.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
-        private void DrawDebugText() => _spriteBatch.DrawString(_debugText, _cameraPoint.MapPosition.ToString(), new Vector2(0, 0), Color.White);
+        private void DrawSmoke() => _emitter.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
+
+        private void DrawDebug()
+        {
+            if (_gameState.ShowDebugging == false) return;
+            DrawDebugText();
+        }
+        private void DrawDebugText() => _spriteBatch.DrawString(_spriteFont, _debugText, new Vector2(0, 0), Color.White);
 
         #endregion
     } 
