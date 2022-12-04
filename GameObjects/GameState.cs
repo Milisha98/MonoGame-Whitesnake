@@ -16,5 +16,7 @@ namespace Whitesnake.GameObjects
         internal bool ShowDebugging { get; set; } = true;
 
         internal DemoStep DemoStep { get; set;}
+
+        internal bool IsFinished { get; set; } = false;
     }
 }

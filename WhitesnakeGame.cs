@@ -27,6 +27,7 @@ namespace Whitesnake
         private Plane _plane;
         private ViewPort _viewport;
         private SmokeEmitter _emitter;
+        private ScoreBoard _scoreBoard;
 
         // Demo
         private DemoController _demo = new DemoController();
@@ -54,12 +55,13 @@ namespace Whitesnake
             TargetElapsedTime = TimeSpan.FromSeconds(1.0 / Global.FPS);
             IsFixedTimeStep = true;
 
+            _gameState.IsDemoMode = true;
+            _gameState.DemoStep = _demo.GetNextStep(0);
+
             _cameraPoint = new CameraPoint(_gameState);
             _plane = new Plane(_gameState, _cameraPoint);
             _emitter = new SmokeEmitter(_gameState, _cameraPoint);
-
-            _gameState.IsDemoMode = true;
-            _gameState.DemoStep = _demo.GetNextStep(0);
+            _scoreBoard = new ScoreBoard(_gameState);
 
             base.Initialize();
         }
@@ -77,6 +79,7 @@ namespace Whitesnake
             _cameraPoint.LoadContent(Content);
             _plane.LoadContent(Content);
             _emitter.LoadContent(Content);
+            _scoreBoard.LoadContent(Content);
 
             // Initialize
             _cameraPoint.MapPosition = Vector2.Zero;
@@ -105,12 +108,20 @@ namespace Whitesnake
             // Keyboard
             if (keyboardState.IsKeyDown(Keys.OemTilde)) _gameState.PauseGame = _gameState.PauseGame == false;
             if (_gameState.PauseGame) return;
+            if (keyboardState.IsKeyDown(Keys.Space) && _gameState.IsDemoMode)
+            {
+                _gameState.IsDemoMode = false;
+                _cameraPoint.ResetVelocity();
+            }
+
+
 
             // Game Objects
             UpdateCamera();
             UpdateDemo();
             UpdatePlane();
             UpdateSmoke();
+            UpdateScoreBoard();
 
             base.Update(gameTime);
         }
@@ -131,9 +142,13 @@ namespace Whitesnake
             _emitter.Update(_updateGameTime);
         }
 
+        private void UpdateScoreBoard() =>
+            _scoreBoard.Update(_updateGameTime);
+
         private void UpdateDemo()
         {
             if (_gameState.IsDemoMode == false) return;
+            if (_gameState.PauseGame) return;
 
             var duration = _gameState.DemoStep.Duration;
             var elapsed = _gameState.DemoStep.Elapsed;
@@ -169,7 +184,7 @@ namespace Whitesnake
             DrawCamera();
             DrawSmoke();
             DrawPlane();
-
+            DrawScoreBoard();
 
             DrawDebug();
             
@@ -194,6 +209,7 @@ namespace Whitesnake
         private void DrawPlane() => _plane.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
         private void DrawCamera() => _cameraPoint.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
         private void DrawSmoke() => _emitter.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
+        private void DrawScoreBoard() => _scoreBoard.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
 
         private void DrawDebug()
         {

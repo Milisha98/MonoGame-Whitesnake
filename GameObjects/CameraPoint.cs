@@ -15,7 +15,7 @@ namespace Whitesnake.GameObjects
     internal class CameraPoint : IMonoGame, IVisibleObject
     {
         const string TextureName = "Camera";
-        public const float DefaultVelocity = 25f;
+        public const float DefaultVelocity = 10f;
 
         public CameraPoint(GameState gameState)
         {
@@ -107,6 +107,8 @@ namespace Whitesnake.GameObjects
         public float UpdateDelta { get; private set; }
 
         public float Velocity { get; set; } = DefaultVelocity;
+
+        public void ResetVelocity() => Velocity = DefaultVelocity;
         
     }
 }
