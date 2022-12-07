@@ -26,8 +26,9 @@ namespace Whitesnake
         private CameraPoint _cameraPoint;
         private Plane _plane;
         private ViewPort _viewport;
-        private SmokeEmitter _emitter;
+        private SmokeEmitter _smokeEmitter;
         private ScoreBoard _scoreBoard;
+        private BLExEmitter _bLExEmitter;
 
         // Demo
         private DemoController _demo = new DemoController();
@@ -60,8 +61,9 @@ namespace Whitesnake
 
             _cameraPoint = new CameraPoint(_gameState);
             _plane = new Plane(_gameState, _cameraPoint);
-            _emitter = new SmokeEmitter(_gameState, _cameraPoint);
+            _smokeEmitter = new SmokeEmitter(_gameState, _cameraPoint);
             _scoreBoard = new ScoreBoard(_gameState);
+            _bLExEmitter = new BLExEmitter(_gameState, _cameraPoint);
 
             base.Initialize();
         }
@@ -78,8 +80,9 @@ namespace Whitesnake
             // Game Objects
             _cameraPoint.LoadContent(Content);
             _plane.LoadContent(Content);
-            _emitter.LoadContent(Content);
+            _smokeEmitter.LoadContent(Content);
             _scoreBoard.LoadContent(Content);
+            _bLExEmitter.LoadContent(Content);
 
             // Initialize
             _cameraPoint.MapPosition = Vector2.Zero;
@@ -122,6 +125,8 @@ namespace Whitesnake
             UpdatePlane();
             UpdateSmoke();
             UpdateScoreBoard();
+            UpdateBlexEmitter();
+
 
             base.Update(gameTime);
         }
@@ -138,12 +143,18 @@ namespace Whitesnake
 
         private void UpdateSmoke()
         {
-            _emitter.MapPosition = _plane.SmokePosition;
-            _emitter.Update(_updateGameTime);
+            _smokeEmitter.MapPosition = _plane.SmokePosition;
+            _smokeEmitter.Update(_updateGameTime);
         }
 
-        private void UpdateScoreBoard() =>
+        private void UpdateScoreBoard()
+        {
             _scoreBoard.Update(_updateGameTime);
+            _gameState.Score = _scoreBoard.Score;
+        }
+
+        private void UpdateBlexEmitter() =>
+            _bLExEmitter.Update(_updateGameTime);
 
         private void UpdateDemo()
         {
@@ -155,8 +166,8 @@ namespace Whitesnake
 
             elapsed += (int)_updateGameTime.ElapsedGameTime.TotalMilliseconds;
             _gameState.DemoStep.Elapsed = elapsed;
-            _emitter.SmokeDuration = _gameState.DemoStep.MaxDecay; ;
-            _emitter.EmitSmoke = _gameState.DemoStep.SmokeOn;
+            _smokeEmitter.SmokeDuration = _gameState.DemoStep.MaxDecay; ;
+            _smokeEmitter.EmitSmoke = _gameState.DemoStep.SmokeOn;
 
             if (elapsed >= duration)
             {
@@ -183,6 +194,7 @@ namespace Whitesnake
             _spriteBatch.Begin();
             DrawCamera();
             DrawSmoke();
+            DrawBlex();
             DrawPlane();
             DrawScoreBoard();
 
@@ -208,8 +220,9 @@ namespace Whitesnake
 
         private void DrawPlane() => _plane.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
         private void DrawCamera() => _cameraPoint.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
-        private void DrawSmoke() => _emitter.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
+        private void DrawSmoke() => _smokeEmitter.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
         private void DrawScoreBoard() => _scoreBoard.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
+        private void DrawBlex() => _bLExEmitter.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
 
         private void DrawDebug()
         {

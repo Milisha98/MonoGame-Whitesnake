@@ -39,7 +39,7 @@ namespace Whitesnake.GameObjects
             if (GameState.IsDemoMode ||
                 GameState.IsFinished) return;
 
-            spriteBatch.DrawString(_spriteFont, $"Score: {Milliseconds / 1000:0}", ScreenPosition, Color.Yellow, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+            spriteBatch.DrawString(_spriteFont, $"Score: {Score}", ScreenPosition, Color.Yellow, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
         }
 
         public GameState GameState { get; private set; }
@@ -47,5 +47,7 @@ namespace Whitesnake.GameObjects
         public Vector2 ScreenPosition { get => new Vector2((Global.RenderWidth / 2) - 48, 20); set => throw new NotImplementedException(); }
         public double Milliseconds { get; set; }
         public bool IsVisible { get => GameState.IsDemoMode == false; }
+
+        public int Score { get => (int)Milliseconds / 1000; }
     }
 }

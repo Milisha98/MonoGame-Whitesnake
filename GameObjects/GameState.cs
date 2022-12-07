@@ -18,5 +18,19 @@ namespace Whitesnake.GameObjects
         internal DemoStep DemoStep { get; set;}
 
         internal bool IsFinished { get; set; } = false;
+
+        internal int Score { get; set; } = 0;
+
+        internal int Level
+        {
+            get
+            {
+                if (Score < 10) return 2000;
+                if (Score < 20) return 1500;
+                if (Score < 30) return 1000;
+                return 500;
+            }
+        }
+
     }
 }

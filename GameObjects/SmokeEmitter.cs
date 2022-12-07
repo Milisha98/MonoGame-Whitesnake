@@ -97,8 +97,6 @@ namespace Whitesnake.GameObjects
 
         public Vector2 MapPosition { get; set; }
 
-        public Vector2 Middle { get => SmokeSprite.Texture.Middle(); }
-
         public bool EmitSmoke { get; set; } = true;
 
         public int SmokeDuration { get; set; } = 200;
