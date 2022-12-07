@@ -114,6 +114,7 @@ namespace Whitesnake
             if (keyboardState.IsKeyDown(Keys.Space) && _gameState.IsDemoMode)
             {
                 _gameState.IsDemoMode = false;
+                _smokeEmitter.EmitSmoke = true;
                 _cameraPoint.ResetVelocity();
             }
 

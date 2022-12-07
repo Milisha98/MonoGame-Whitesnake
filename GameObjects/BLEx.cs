@@ -16,7 +16,7 @@ namespace Whitesnake.GameObjects
             _rnd = new Random();
             MapPosition = GetPositionAroundViewPort();
             var destination = GetPositionAroundViewPort();
-            Angle = MapPosition.GetAngle(destination);
+            Angle = destination.GetAngle(CameraPoint.MapPosition);
             Velocity = _rnd.Next(5, 25);
             var deltaX = (float)Math.Sin(Angle) * Velocity;
             var deltaY = (float)-Math.Cos(Angle) * Velocity;
