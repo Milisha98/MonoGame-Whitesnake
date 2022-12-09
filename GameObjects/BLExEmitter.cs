@@ -52,7 +52,7 @@ namespace Whitesnake.GameObjects
 
             // Determine when to create new
             LastAdded += delta;
-            if (LastAdded <= _gameState.Level)
+            if (_blexList.Count() < (_gameState.Score * 10))
             {
                 var newBlex = new BLEx(_cameraPoint);
                 _blexList.Add(newBlex);

@@ -49,8 +49,8 @@ namespace Whitesnake.GameObjects
 
             // Set the Location
             Angle = CameraPoint.Angle;
-            ScreenPosition = CameraPoint.ScreenPosition - CurrentSprite.Texture.Middle();
-            MapPosition = CameraPoint.MapPosition - CurrentSprite.Texture.Middle();
+            ScreenPosition = CameraPoint.ScreenPosition;
+            MapPosition = CameraPoint.MapPosition;
 
             // Smoke Emitter
             Vector2 planeMiddle = this.MapPosition - CurrentSprite.Texture.Middle();

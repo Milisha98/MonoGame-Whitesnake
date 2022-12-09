@@ -116,6 +116,7 @@ namespace Whitesnake
                 _gameState.IsDemoMode = false;
                 _smokeEmitter.EmitSmoke = true;
                 _cameraPoint.ResetVelocity();
+                //_cameraPoint.Velocity = 0;
             }
 
 
