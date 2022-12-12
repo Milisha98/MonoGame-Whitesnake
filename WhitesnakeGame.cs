@@ -6,6 +6,8 @@ using System;
 using Plane = Whitesnake.GameObjects.Plane;
 using Whitesnake.Demo;
 using Whitesnake.Core;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Whitesnake
 {
@@ -36,6 +38,7 @@ namespace Whitesnake
         // Debugging
         private SpriteFont _spriteFont;
         private string _debugText = "";
+        private Texture2D _debugRectangle;
 
 
         public WhitesnakeGame()
@@ -90,6 +93,8 @@ namespace Whitesnake
 
             // Debug
             _spriteFont = Content.Load<SpriteFont>("Text");
+            _debugRectangle = new Texture2D(GraphicsDevice, 1, 1);
+            _debugRectangle.SetData(new Color[] { Color.White });
         }
 
         #region Update
@@ -230,8 +235,24 @@ namespace Whitesnake
         {
             if (_gameState.ShowDebugging == false) return;
             DrawDebugText();
+            DrawCollisionRectangles(_plane.CollisionPoints);
         }
         private void DrawDebugText() => _spriteBatch.DrawString(_spriteFont, _debugText, new Vector2(0, 0), Color.White);
+
+        private void DrawCollisionRectangles(IEnumerable<Rectangle> collisionRectangles)
+        {
+            foreach (var r in collisionRectangles) DrawRectangle(r);
+        }
+	
+
+
+
+        private void DrawRectangle(Rectangle r)
+        {
+            var tilePos = r.Location.ToVector2().MapPositionToScreenPosition(_viewport.Bounds);
+            var screenRectangle = r.Move(tilePos);
+            _spriteBatch.Draw(_debugRectangle, screenRectangle, Color.Blue);
+        }
 
         #endregion
     } 

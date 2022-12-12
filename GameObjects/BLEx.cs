@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Whitesnake.Core;
 
 namespace Whitesnake.GameObjects
@@ -38,22 +40,27 @@ namespace Whitesnake.GameObjects
             // Move
             MapPosition += Movement * (delta / 100);
 
-            // TODO: Check for Collisions
-
             // Check for Destruction
             UpdateMarkForDestruction();
+
+            // Collision Coordinates
+            var origin = new Vector2(27.5f, 38.5f);
+            CollisionPoints = RelativeCollisionPoints.Select(r => r.Rotate(origin, Angle))
+                                                     .Select(r => r.Move(MapPosition - origin))                         // Align Middle
+                                                     .Select(r => r.Scale(0.5f))                                        // Scale
+                                                     .ToList();
+
         }
 
         private void UpdateMarkForDestruction()
         {
-            var distance = MapPosition.GetDistance(CameraPoint.MapPosition);
-
+            Distance = MapPosition.GetDistance(CameraPoint.MapPosition);
             MarkedForDestroy = Distance > Global.ScreenWidth * 2;
         }
 
 
 
-    public Vector2 MapPosition { get; set; } = Vector2.Zero;
+        public Vector2 MapPosition { get; set; } = Vector2.Zero;
         public Vector2 ScreenPosition { get; set; } = Vector2.Zero;
         public float Angle { get; set; } = 0;
         public float Velocity { get; set; }
@@ -64,5 +71,13 @@ namespace Whitesnake.GameObjects
 
         CameraPoint CameraPoint { get; set; }
 
+        public List<Rectangle> CollisionPoints { get; private set; }
+
+        private List<Rectangle> RelativeCollisionPoints
+        {
+            get =>
+                new List<Rectangle> { Helper.RectangleFromPoints(new Point(0, 0), new Point(55, 77)) };
+
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace Whitesnake.Core
         internal static Rectangle Move(this Rectangle rectangle, Vector2 move) =>
             new Rectangle((rectangle.Location.ToVector2() + move).ToPoint(), rectangle.Size);
 
-        internal static Vector2 RotatePoint(this Vector2 pointToRotate, float angleInRadians, Vector2? centerPoint = null)
+        internal static Vector2 RotateVector(this Vector2 pointToRotate, float angleInRadians, Vector2? centerPoint = null)
         {
             centerPoint = centerPoint ?? Vector2.Zero;
             double cosTheta = Math.Cos(angleInRadians);
@@ -90,6 +90,30 @@ namespace Whitesnake.Core
                 double x = b.X - a.X;
                 double y = b.Y - a.Y;
                 return (float)Math.Atan2(y, x);
+        }
+
+        internal static Rectangle RectangleFromPoints(Point v1, Point v2) =>
+            new Rectangle(v1, v2 - v1);
+
+        internal static (Vector2 v1, Vector2 v2) ToVectors(this Rectangle r) =>
+            (new Vector2(r.X, r.Y), new Vector2(r.X + r.Width, r.Y + r.Height));
+
+        internal static Rectangle Rotate(this Rectangle r, Vector2 origin, float angle)
+        {
+            (var v1, var v2) = ToVectors(r);
+            var v3 = v1.RotateVector(angle, origin);
+            var v4 = v2.RotateVector(angle, origin);
+
+            return RectangleFromVectors(v3, v4);
+
+        }
+        internal static Rectangle RectangleFromVectors(Vector2 v1, Vector2 v2) =>
+            new Rectangle(v1.ToPoint(), (v2 - v1).ToPoint());
+
+        internal static Rectangle Scale(this Rectangle r, float scale)
+        {
+            (var v1, var v2) = ToVectors(r);
+            return RectangleFromVectors(v1 * scale, v2 * scale);
         }
 
     }
