@@ -197,16 +197,14 @@ namespace Whitesnake
         private Vector2? CheckCollisions()
         {
             var collisionPoints = _bLExEmitter.ClaytonsCollisions();
-            if (collisionPoints == null) return null;
-            if (collisionPoints.Count() == 0) return null;
 
             // Now, lets be more fine grained and check Rocket Collision Points 
             foreach (var point in collisionPoints)
             {
-                var blex = _plane.CollisionPoints.FirstOrDefault(x => x.Intersects(point));
-                if (blex != null)
+                var blex = _plane.CollisionPoints.Where(x => x.Intersects(point)).ToList();
+                if (blex.Any())
                 {
-                    return blex.Location.ToVector2();
+                    return blex.First().Location.ToVector2();
                 }    
             }
             return null;
@@ -271,6 +269,7 @@ namespace Whitesnake
         private void DrawCollisionRectangles(IEnumerable<Rectangle> collisionRectangles)
         {
             foreach (var r in collisionRectangles) DrawRectangle(r);
+            foreach (var r in _bLExEmitter.ClaytonsCollisions()) DrawRectangle(r);
         }
 	
 

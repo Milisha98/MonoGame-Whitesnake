@@ -44,11 +44,11 @@ namespace Whitesnake.GameObjects
             UpdateMarkForDestruction();
 
             // Collision Coordinates
-            var origin = new Vector2(27.5f, 38.5f);
-            CollisionPoints = RelativeCollisionPoints.Select(r => r.Rotate(origin, Angle))
-                                                     .Select(r => r.Move(MapPosition - origin))                         // Align Middle
-                                                     .Select(r => r.Scale(0.5f))                                        // Scale
-                                                     .ToList();
+            CollisionPoints = RelativeCollisionPoints
+                //.Select(r => r.Rotate(origin, Angle))
+                .Select(r => r.Move(MapPosition))                    // Align Middle
+                .Select(r => r.Scale(0.5f))                                        // Scale                
+                .ToList();
 
         }
 
@@ -68,6 +68,8 @@ namespace Whitesnake.GameObjects
 
         public float Distance { get; private set; }
         public bool MarkedForDestroy { get; private set; } = false;
+
+        public Vector2 Middle { get => new Vector2(27.5f, 38.5f); }
 
         CameraPoint CameraPoint { get; set; }
 

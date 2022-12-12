@@ -94,7 +94,7 @@ namespace Whitesnake.GameObjects
         public double LastAdded { get; private set; } = 0;
 
         public List<Rectangle> ClaytonsCollisions() =>
-            _blexList.Where(b => b.Distance <= 177).SelectMany(x => x.CollisionPoints).ToList();
+            _blexList.Where(b => b.Distance <= Global.ScreenWidth).SelectMany(x => x.CollisionPoints).ToList();
 
     }
 }
