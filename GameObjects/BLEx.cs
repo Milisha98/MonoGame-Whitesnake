@@ -54,7 +54,7 @@ namespace Whitesnake.GameObjects
 
         private void UpdateMarkForDestruction()
         {
-            Distance = MapPosition.GetDistance(CameraPoint.MapPosition);
+            Distance = Math.Abs(MapPosition.GetDistance(CameraPoint.MapPosition));
             MarkedForDestroy = Distance > Global.ScreenWidth * 2;
         }
 
@@ -67,11 +67,11 @@ namespace Whitesnake.GameObjects
         public Vector2 Movement { get; private set; }
 
         public float Distance { get; private set; }
-        public bool MarkedForDestroy { get; set; }
+        public bool MarkedForDestroy { get; private set; } = false;
 
         CameraPoint CameraPoint { get; set; }
 
-        public List<Rectangle> CollisionPoints { get; private set; }
+        public List<Rectangle> CollisionPoints { get; private set; } = new List<Rectangle>();
 
         private List<Rectangle> RelativeCollisionPoints
         {

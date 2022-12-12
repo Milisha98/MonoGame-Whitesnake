@@ -48,6 +48,8 @@ namespace Whitesnake.GameObjects
 
         public void Update(GameTime gameTime)
         {
+            if (GameState.IsFinished) return;
+
             SetCurrentSpriteFromControllerInput();          
 
             // Set the Location

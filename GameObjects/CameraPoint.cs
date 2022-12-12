@@ -41,6 +41,7 @@ namespace Whitesnake.GameObjects
 
         public void Update(GameTime gameTime)
         {
+            if (GameState.IsFinished) return;
             float delta = (float)gameTime.ElapsedGameTime.TotalMilliseconds / Global.FPS;
 
             if (GameState.IsDemoMode == false)

@@ -8,6 +8,8 @@ using Whitesnake.Demo;
 using Whitesnake.Core;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
 
 namespace Whitesnake
 {
@@ -134,6 +136,15 @@ namespace Whitesnake
             UpdateScoreBoard();
             UpdateBlexEmitter();
 
+            var collisionPoint = CheckCollisions();
+            if (collisionPoint.HasValue)
+            {
+                _gameState.IsFinished = true;
+                //_collisionPoint = collisionPoint;
+                //_explosion.MapPosition = _collisionPoint.Value;
+                //_explosion.Start();
+                //_plane.IsVisible = false;
+            }
 
             base.Update(gameTime);
         }
@@ -181,6 +192,24 @@ namespace Whitesnake
                 _gameState.DemoStep = _demo.GetNextStep(_gameState.DemoStep.Sequence);
                 if (_gameState.DemoStep == null) _gameState.IsDemoMode = false;
             }         
+        }
+
+        private Vector2? CheckCollisions()
+        {
+            var collisionPoints = _bLExEmitter.ClaytonsCollisions();
+            if (collisionPoints == null) return null;
+            if (collisionPoints.Count() == 0) return null;
+
+            // Now, lets be more fine grained and check Rocket Collision Points 
+            foreach (var point in collisionPoints)
+            {
+                var blex = _plane.CollisionPoints.FirstOrDefault(x => x.Intersects(point));
+                if (blex != null)
+                {
+                    return blex.Location.ToVector2();
+                }    
+            }
+            return null;
         }
 
 
