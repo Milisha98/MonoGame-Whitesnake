@@ -82,7 +82,7 @@ namespace Whitesnake.GameObjects
 
         private void SetCurrentSpriteFromControllerInput()
         {
-            int direction = CameraPoint.ControllerDirection;
+            int direction = CameraPoint.HorizontalControllerDirection;
 
             // Switch the current Sprite            
             if (direction == -1) CurrentSprite = PlaneLeftSprite;
@@ -109,6 +109,7 @@ namespace Whitesnake.GameObjects
         public CameraPoint CameraPoint { get; private set; }
         public GameState GameState { get; private set; }
         public float Angle { get; set; } = 0;
+
         public Vector2 SmokePosition { get; private set; }
 
         public List<Rectangle> CollisionPoints { get; private set; }

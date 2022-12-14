@@ -16,6 +16,7 @@ namespace Whitesnake.GameObjects
     {
         const string TextureName = "Camera";
         public const float DefaultVelocity = 10f;
+        
 
         public CameraPoint(GameState gameState)
         {
@@ -61,24 +62,32 @@ namespace Whitesnake.GameObjects
         private void ControllerInput(float delta)
         {
             var vector = KeyboardController.CheckInput();
-            ControllerDirection = vector.X > 0 ? 1 : vector.X < 0 ? -1 : 0;
+            HorizontalControllerDirection = vector.X > 0 ? 1 : vector.X < 0 ? -1 : 0;
+            VerticalControllerDirection = vector.Y > 0 ? 1 : vector.Y < 0 ? -1 : 0;
 
             // Set the Angle
             float deltaAngle = 0f;
-            if (ControllerDirection == -1) deltaAngle = -delta * Handling;
-            if (ControllerDirection == 1) deltaAngle = delta * Handling;
+            if (HorizontalControllerDirection == -1) deltaAngle = -delta * Handling;
+            if (HorizontalControllerDirection == 1) deltaAngle = delta * Handling;
             Angle += deltaAngle;
+
+            // Set the Velocity
+            // Not implemented (makes it too easy)
+            //if (VerticalControllerDirection == 1) Velocity -= delta * Acceleration;
+            //if (VerticalControllerDirection == -1) Velocity += delta * Acceleration;
+            //Velocity = Velocity.Clamp(5, 25);
+
         }
 
         private void MoveTowardsNextWaypoint(float ms)
         {
             var newAngle = MathHelper.ToRadians(GameState.DemoStep.Rotation);
             if (newAngle == 0)
-                ControllerDirection = 0;
+                HorizontalControllerDirection = 0;
             else if (newAngle < 0)
-                ControllerDirection = -1;
+                HorizontalControllerDirection = -1;
             else
-                ControllerDirection = 1;
+                HorizontalControllerDirection = 1;
             Angle += newAngle;
             Velocity = GameState.DemoStep.Velocity;
 
@@ -103,11 +112,13 @@ namespace Whitesnake.GameObjects
 
         public SpriteFrame CameraSprite { get; private set; }
 
-        public int ControllerDirection { get; private set; }
-             
+        public int HorizontalControllerDirection { get; private set; }
+        public int VerticalControllerDirection { get; private set; }
+
         public float UpdateDelta { get; private set; }
 
         public float Velocity { get; set; } = DefaultVelocity;
+        public float Acceleration { get; set; } = 1f;
 
         public void ResetVelocity() => Velocity = DefaultVelocity;
         

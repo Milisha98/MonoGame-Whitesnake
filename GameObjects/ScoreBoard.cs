@@ -35,8 +35,12 @@ namespace Whitesnake.GameObjects
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, Rectangle viewPort)
-        {
-            if (GameState.IsDemoMode) return;
+        {           
+            if (GameState.IsDemoMode)
+            {
+                spriteBatch.DrawString(_spriteFont, $"Press Space to Exit demo", ScreenPosition - new Vector2(120, 0), Color.Red, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+                return;
+            }
 
             spriteBatch.DrawString(_spriteFont, $"Score: {Score}", ScreenPosition, Color.Yellow, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
             if (GameState.IsFinished)
