@@ -36,10 +36,12 @@ namespace Whitesnake.GameObjects
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, Rectangle viewPort)
         {
-            if (GameState.IsDemoMode ||
-                GameState.IsFinished) return;
+            if (GameState.IsDemoMode) return;
 
             spriteBatch.DrawString(_spriteFont, $"Score: {Score}", ScreenPosition, Color.Yellow, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+            if (GameState.IsFinished)
+                spriteBatch.DrawString(_spriteFont, $"Press Enter to Restart", ScreenPosition - new Vector2(90, -40), Color.Red, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+    
         }
 
         public GameState GameState { get; private set; }

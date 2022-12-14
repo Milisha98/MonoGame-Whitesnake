@@ -125,11 +125,19 @@ namespace Whitesnake
             if (_gameState.PauseGame) return;
             if (keyboardState.IsKeyDown(Keys.Space) && _gameState.IsDemoMode)
             {
-                _gameState.IsDemoMode = false;
-                _smokeEmitter.EmitSmoke = true;
-                _cameraPoint.ResetVelocity();
+                ExitDemoMode();
             }
 
+            if (keyboardState.IsKeyDown(Keys.Enter) && _gameState.IsFinished) 
+            {
+                _explosion.Reset();
+                _explosion.Stop();
+                _bLExEmitter.Reset();
+                _plane.IsVisible = true;
+                _smokeEmitter.EmitSmoke = true;
+                _scoreBoard.Milliseconds = 0;
+                _gameState.IsFinished = false;
+            }
 
             // Game Objects
             UpdateCamera();
@@ -144,13 +152,25 @@ namespace Whitesnake
             var collisionPoint = CheckCollisions();
             if (collisionPoint.HasValue)
             {
-                _gameState.IsFinished = true;
-                _explosion.MapPosition = collisionPoint.Value;
-                _explosion.Start();
-                _plane.IsVisible = false;
+                Explode();
             }
 
             base.Update(gameTime);
+        }
+
+        private void ExitDemoMode()
+        {
+            _gameState.IsDemoMode = false;
+            _smokeEmitter.EmitSmoke = true;
+            _cameraPoint.ResetVelocity();
+        }
+
+        private void Explode()
+        {
+            _gameState.IsFinished = true;
+            _explosion.Start();
+            _plane.IsVisible = false;
+            _smokeEmitter.EmitSmoke = false;
         }
 
         private void UpdateCamera()
@@ -240,7 +260,7 @@ namespace Whitesnake
             DrawScoreBoard();
             DrawExplosion();
 
-            DrawDebug();
+            //DrawDebug();
             
             _spriteBatch.End();
 

@@ -52,7 +52,7 @@ namespace Whitesnake.GameObjects
             if (IsVisible == false) return;
             if (Frame >= Frames) return;
             var frame = _explosionSheet.SpriteList[Frame];
-            ScreenPosition = MapPosition.MapPositionToScreenPosition(viewPort);
+            ScreenPosition = new Vector2(Global.RenderWidth / 2, Global.RenderHeight / 2);
             DrawFrame(spriteBatch, frame);
         }
 
@@ -84,7 +84,8 @@ namespace Whitesnake.GameObjects
 
         public void Stop()
         {
-            IsPlaying = false;
+            IsPlaying = false; 
+            IsVisible = false;
         }
 
         public void Reset()
@@ -95,7 +96,7 @@ namespace Whitesnake.GameObjects
 
         #endregion
 
-        public float Scale { get; set; } = 1f;
+        public float Scale { get; set; } = 4f;
         public Vector2 MapPosition { get; set; } = Vector2.Zero;
         public Vector2 ScreenPosition { get; set; } = Vector2.Zero;
 

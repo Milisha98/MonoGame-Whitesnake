@@ -87,6 +87,8 @@ namespace Whitesnake.GameObjects
 
         }
 
+        public void Reset() => _blexList.Clear();
+
         public SpriteFrame BLExSprite { get; private set; }
 
         public int BLExCount { get => _blexList.Count(); }
