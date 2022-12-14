@@ -92,6 +92,7 @@ namespace Whitesnake.GameObjects
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, Rectangle viewPort)
         {
+            if (IsVisible == false) return;
             var origin = new Vector2(CurrentSprite.Texture.Width / 2, CurrentSprite.Texture.Height / 2);
             spriteBatch.Draw(CurrentSprite.Texture, ScreenPosition, null, Color.White, Angle, origin, 1f, SpriteEffects.None, 1);
         }
@@ -111,6 +112,9 @@ namespace Whitesnake.GameObjects
         public Vector2 SmokePosition { get; private set; }
 
         public List<Rectangle> CollisionPoints { get; private set; }
+
+        public bool IsVisible { get; set; } = true;
+
 
         private List<Vector2> RelativeCollisionPoints
         {
@@ -269,52 +273,6 @@ new Vector2(107, 122),
 new Vector2(110, 122),
 new Vector2(107, 123),
 new Vector2(110, 123)
-                };
-        }
-
-        private List<Rectangle> RelativeCollisionPointsOld
-        {
-            get =>
-                new List<Rectangle>
-                {
-Helper.RectangleFromPoints(new Point(4,30), new Point(172,66)),
-Helper.RectangleFromPoints(new Point(74,66), new Point(102,75)),
-Helper.RectangleFromPoints(new Point(75,75), new Point(101,87)),
-Helper.RectangleFromPoints(new Point(76,87), new Point(100,98)),
-Helper.RectangleFromPoints(new Point(77,98), new Point(99,105)),
-Helper.RectangleFromPoints(new Point(78,105), new Point(98,108)),
-Helper.RectangleFromPoints(new Point(79,108), new Point(97,111)),
-Helper.RectangleFromPoints(new Point(80,111), new Point(96,113)),
-Helper.RectangleFromPoints(new Point(0,34), new Point(4,62)),
-Helper.RectangleFromPoints(new Point(172,34), new Point(176,62)),
-Helper.RectangleFromPoints(new Point(70,24), new Point(106,30)),
-Helper.RectangleFromPoints(new Point(69,15), new Point(107,23)),
-Helper.RectangleFromPoints(new Point(68,10), new Point(107,14)),
-Helper.RectangleFromPoints(new Point(72,7), new Point(103,9)),
-Helper.RectangleFromPoints(new Point(68,5), new Point(104,5)),
-Helper.RectangleFromPoints(new Point(69,4), new Point(106,4)),
-Helper.RectangleFromPoints(new Point(83,2), new Point(91,3)),
-Helper.RectangleFromPoints(new Point(85,0), new Point(90,1)),
-Helper.RectangleFromPoints(new Point(66,123), new Point(110,128)),
-Helper.RectangleFromPoints(new Point(78,114), new Point(98,122)),
-Helper.RectangleFromPoints(new Point(75,116), new Point(78,123)),
-Helper.RectangleFromPoints(new Point(72,118), new Point(75,123)),
-Helper.RectangleFromPoints(new Point(69,120), new Point(72,123)),
-Helper.RectangleFromPoints(new Point(98,115), new Point(100,123)),
-Helper.RectangleFromPoints(new Point(100,117), new Point(103,123)),
-Helper.RectangleFromPoints(new Point(103,119), new Point(105,123)),
-Helper.RectangleFromPoints(new Point(105,120), new Point(107,123)),
-Helper.RectangleFromPoints(new Point(69,8), new Point(72,10)),
-Helper.RectangleFromPoints(new Point(103,8), new Point(106,10)),
-Helper.RectangleFromPoints(new Point(99,3), new Point(106,3)),
-Helper.RectangleFromPoints(new Point(1,32), new Point(4,34)),
-Helper.RectangleFromPoints(new Point(2,31), new Point(4,34)),
-Helper.RectangleFromPoints(new Point(1,62), new Point(4,64)),
-Helper.RectangleFromPoints(new Point(2,64), new Point(4,65)),
-Helper.RectangleFromPoints(new Point(172,31), new Point(175,34)),
-Helper.RectangleFromPoints(new Point(172,62), new Point(175,65)),
-Helper.RectangleFromPoints(new Point(67,121), new Point(69,123)),
-Helper.RectangleFromPoints(new Point(107,122), new Point(110,123))
                 };
         }
 

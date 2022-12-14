@@ -72,7 +72,7 @@ namespace Whitesnake
             _smokeEmitter = new SmokeEmitter(_gameState, _cameraPoint);
             _scoreBoard = new ScoreBoard(_gameState);
             _bLExEmitter = new BLExEmitter(_gameState, _cameraPoint);
-            _explosion = new Explosion(_cameraPoint);
+            _explosion = new Explosion();
 
             base.Initialize();
         }
@@ -145,10 +145,9 @@ namespace Whitesnake
             if (collisionPoint.HasValue)
             {
                 _gameState.IsFinished = true;
-                //_collisionPoint = collisionPoint;
-                //_explosion.MapPosition = _collisionPoint.Value;
-                //_explosion.Start();
-                //_plane.IsVisible = false;
+                _explosion.MapPosition = collisionPoint.Value;
+                _explosion.Start();
+                _plane.IsVisible = false;
             }
 
             base.Update(gameTime);
@@ -239,6 +238,7 @@ namespace Whitesnake
             DrawBlex();
             DrawPlane();
             DrawScoreBoard();
+            DrawExplosion();
 
             DrawDebug();
             
@@ -265,6 +265,7 @@ namespace Whitesnake
         private void DrawSmoke() => _smokeEmitter.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
         private void DrawScoreBoard() => _scoreBoard.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
         private void DrawBlex() => _bLExEmitter.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
+        private void DrawExplosion() => _explosion.Draw(_spriteBatch, _drawGameTime, _viewport.Bounds);
 
         private void DrawDebug()
         {
@@ -280,9 +281,6 @@ namespace Whitesnake
             foreach (var r in _bLExEmitter.ClaytonsCollisions()) DrawRectangle(r);
         }
 	
-
-
-
         private void DrawRectangle(Rectangle r)
         {
             var tilePos = r.Location.ToVector2().MapPositionToScreenPosition(_viewport.Bounds);

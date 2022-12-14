@@ -20,11 +20,7 @@ namespace Whitesnake.GameObjects
         private readonly TexturePackLoader _tileSetLoader = new TexturePackLoader();
         private SpriteSheet _explosionSheet;
 
-        public Explosion(CameraPoint cameraPoint)
-        {
-            CameraPoint= cameraPoint;
-        }
-
+ 
         public void LoadContent(ContentManager contentManager)
         {
             var rnd = new Random();
@@ -36,8 +32,6 @@ namespace Whitesnake.GameObjects
         {
             if (!IsPlaying || Duration.TotalMilliseconds == 0) return;
             var delta = gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            MapPosition = CameraPoint.MapPosition;
 
             // Increase the current
             CurrentMilliseconds += (long)delta;
@@ -108,7 +102,6 @@ namespace Whitesnake.GameObjects
         public bool IsVisible { get; set; } = false;
         public int Frame { get; set; } = 0;
         public int Frames { get => _explosionSheet.SpriteList.Count(); }
-        public CameraPoint CameraPoint { get; private set; }
 
         float Angle { get; set; }
 
