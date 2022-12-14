@@ -33,6 +33,7 @@ namespace Whitesnake
         private SmokeEmitter _smokeEmitter;
         private ScoreBoard _scoreBoard;
         private BLExEmitter _bLExEmitter;
+        private Explosion _explosion;
 
         // Demo
         private DemoController _demo = new DemoController();
@@ -45,9 +46,11 @@ namespace Whitesnake
 
         public WhitesnakeGame()
         {
-            _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = Global.ScreenWidth;
-            _graphics.PreferredBackBufferHeight = Global.ScreenHeight;
+            _graphics = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth = Global.ScreenWidth,
+                PreferredBackBufferHeight = Global.ScreenHeight
+            };
             _graphics.ApplyChanges();
 
             Content.RootDirectory = "Content";
@@ -69,6 +72,7 @@ namespace Whitesnake
             _smokeEmitter = new SmokeEmitter(_gameState, _cameraPoint);
             _scoreBoard = new ScoreBoard(_gameState);
             _bLExEmitter = new BLExEmitter(_gameState, _cameraPoint);
+            _explosion = new Explosion(_cameraPoint);
 
             base.Initialize();
         }
@@ -88,6 +92,7 @@ namespace Whitesnake
             _smokeEmitter.LoadContent(Content);
             _scoreBoard.LoadContent(Content);
             _bLExEmitter.LoadContent(Content);
+            _explosion.LoadContent(Content);
 
             // Initialize
             _cameraPoint.MapPosition = Vector2.Zero;
@@ -123,9 +128,7 @@ namespace Whitesnake
                 _gameState.IsDemoMode = false;
                 _smokeEmitter.EmitSmoke = true;
                 _cameraPoint.ResetVelocity();
-                //_cameraPoint.Velocity = 0;
             }
-
 
 
             // Game Objects
@@ -135,6 +138,8 @@ namespace Whitesnake
             UpdateSmoke();
             UpdateScoreBoard();
             UpdateBlexEmitter();
+            UpdateExplosion();
+
 
             var collisionPoint = CheckCollisions();
             if (collisionPoint.HasValue)
@@ -173,6 +178,9 @@ namespace Whitesnake
 
         private void UpdateBlexEmitter() =>
             _bLExEmitter.Update(_updateGameTime);
+
+        private void UpdateExplosion() =>
+            _explosion.Update(_updateGameTime);
 
         private void UpdateDemo()
         {
